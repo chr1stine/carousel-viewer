@@ -30,8 +30,7 @@ onMounted(() => {
         <button style="grid-area: folder" id="folder" @click="dirSelector.click()">Выбрать
             папку</button>
         <input id="file" hidden type="file" webkitdirectory>
-        <select style="grid-area: modes" name="modes" id="modes" v-model="store.mode" value="none">
-            <option value="none" disabled>Выбрать режим</option>
+        <select style="grid-area: modes" name="modes" id="modes" v-model="store.mode" value="full">
             <option value="full">целиком</option>
             <option value="vertical">по вертикали</option>
             <option value="horizontal">по горизонтали</option>

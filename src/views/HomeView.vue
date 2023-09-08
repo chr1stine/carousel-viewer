@@ -8,7 +8,7 @@ const store = useMainStore();
 
 <template>
   <Controls />
-  <Carousel v-if="store.mode !== 'none' && store.images?.length" />
+  <Carousel v-if="store.images?.length" />
 </template>
 <style scoped>
 
