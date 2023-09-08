@@ -1,14 +1,15 @@
 <script setup>
-import TheWelcome from '../components/TheWelcome.vue'
-function selectDir() {
-  console.log('selectDir')
-}
+import Carousel from '@/components/Carousel.vue';
+import Controls from '@/components/Controls.vue';
+import { useMainStore } from '@/stores/main';
+
+const store = useMainStore();
 </script>
 
 <template>
-  <main>
-    <button @click="selectDir">
-      Выбрать папку
-    </button>
-  </main>
+  <Controls />
+  <Carousel v-if="store.mode !== 'none' && store.images?.length" />
 </template>
+<style scoped>
+
+</style>
