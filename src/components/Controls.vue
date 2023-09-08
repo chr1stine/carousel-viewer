@@ -37,10 +37,6 @@ onMounted(() => {
             <option value="horizontal">по горизонтали</option>
             <option value="square">1к1</option>
         </select>
-        <label style="grid-area: quality">
-            Улучшение качества
-            <input type="checkbox" />
-        </label>
         <button style="grid-area: prev;" id="prev" @click="store.index--" :disabled="store.index === 0">пред</button>
         <span id="index" style="grid-area: index;">{{ store.index + 1}} / {{ store.images.length }}</span>
         <button style="grid-area: next;" id="next" @click="store.index++" :disabled="store.index === store.images?.length - 1">след</button>
