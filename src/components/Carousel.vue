@@ -43,14 +43,16 @@ function changeImage(newIndex) {
   const img = document.createElement('img');
   img.src = newSrc;
 
-  img.onload = async (e) => {
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+  });
 
-    // const newImg = await scaleTofit(img);
-    const newImg = img;
+  // const newImg = await scaleTofit(img);
+  const newImg = img;
 
-    drawImage(newImg);
-    store.index = newIndex;
-  }
+  drawImage(newImg);
+  store.index = newIndex;
 }
 
 let ctx;
