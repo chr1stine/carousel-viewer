@@ -7,7 +7,6 @@ const IMAGE_MAX_WIDTH = ref(null);
 const IMAGE_MAX_HEIGHT = ref(null);
 
 function drawImage(img) {
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.save();
 }
@@ -37,7 +36,8 @@ async function scaleTofit(img) {
   }))
 }
 
-function changeImage(newIndex) {
+const updateImage = throttle(async () => {
+  const newIndex = store.index;
   const newImage = store.images[newIndex].file;
   const newSrc = URL.createObjectURL(newImage);
   const img = document.createElement('img');
@@ -52,6 +52,17 @@ function changeImage(newIndex) {
   const newImg = img;
 
   drawImage(newImg);
+}, 1000)
+
+async function changeImage(newIndex) {
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+  ctx.fillText('загрузка...',ctx.canvas.width / 2, ctx.canvas.height / 2);
+  ctx.fillStyle = "white";
+  ctx.textAlign = 'middle';
+
+  updateImage(newIndex);
+
   store.index = newIndex;
 }
 
@@ -74,6 +85,21 @@ watch(
     store.index = 0;
     changeImage(store.index);
   })
+
+function throttle(cb, timeout) {
+  let busy = false;
+  return (...args) => {
+    if (busy) {
+      return;
+    }
+    busy = true
+    cb(...args);
+    setTimeout(() => {
+      busy = false;
+      cb(...args);
+    }, timeout)
+  }
+}
 
 watch(
   () => store.index,
