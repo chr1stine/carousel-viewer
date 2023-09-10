@@ -4,6 +4,7 @@ import { useMainStore } from '@/stores/main';
 
 const IMAGE_MAX_WIDTH = ref(null);
 const IMAGE_MAX_HEIGHT = ref(null);
+const isLoading = ref(true);
 
 function drawImage(img) {
   ctx.canvas.width = img.naturalWidth;
@@ -25,21 +26,16 @@ const updateImage = throttle(async () => {
   });
 
   drawImage(img);
+  isLoading.value = false;
 }, 1000)
 
-function showLoader() {
-  ctx.font = `bold ${ctx.canvas.width / 20}px serif`;
-  ctx.fillText('загрузка...', ctx.canvas.width / 2, ctx.canvas.height / 2);
-  ctx.fillStyle = "white";
-  ctx.textAlign = 'middle';
-}
 
 async function changeImage(newIndex) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+  isLoading.value = true;
+  
   updateImage(newIndex);
-
-  showLoader();
 
   store.index = newIndex;
 }
@@ -89,6 +85,7 @@ watch(
 
 <template>
   <div class="canvas-container">
+    <div v-show="isLoading" style="position: absolute; color: white; width: 200px; height: 200px; font-size: 4em;">загрузка...</div>
     <canvas id="canvas" v-bind:class="store.mode"></canvas>
   </div>
 </template>
