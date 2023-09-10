@@ -27,15 +27,19 @@ const updateImage = throttle(async () => {
   drawImage(img);
 }, 1000)
 
+function showLoader() {
+  ctx.font = `bold ${ctx.canvas.width / 20}px serif`;
+  ctx.fillText('загрузка...', ctx.canvas.width / 2, ctx.canvas.height / 2);
+  ctx.fillStyle = "white";
+  ctx.textAlign = 'middle';
+}
+
 async function changeImage(newIndex) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   updateImage(newIndex);
 
-  ctx.font = `bold ${ctx.canvas.width / 20}px serif`;
-  ctx.fillText('загрузка...', ctx.canvas.width / 2, ctx.canvas.height / 2);
-  ctx.fillStyle = "white";
-  ctx.textAlign = 'middle';
+  showLoader();
 
   store.index = newIndex;
 }
