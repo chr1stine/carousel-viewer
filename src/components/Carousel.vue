@@ -2,8 +2,6 @@
 import { onMounted, ref, watch } from 'vue';
 import { useMainStore } from '@/stores/main';
 
-const IMAGE_MAX_WIDTH = ref(null);
-const IMAGE_MAX_HEIGHT = ref(null);
 const isLoading = ref(true);
 
 function drawImage(img) {
@@ -45,9 +43,6 @@ let ctx;
 const store = useMainStore();
 onMounted(() => {
   const canvas = document.querySelector('#canvas');
-
-  IMAGE_MAX_WIDTH.value = canvas.offsetWidth;
-  IMAGE_MAX_HEIGHT.value = canvas.offsetHeight;
 
   ctx = canvas.getContext('2d');
   changeImage(store.index);
