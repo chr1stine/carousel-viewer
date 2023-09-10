@@ -52,10 +52,13 @@ export default {
     async deleteAllImages() {
         const db = await this.getDb()
 
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             const trans = db.transaction([STORAGE_NAME], 'readwrite')
             trans.oncomplete = () => {
                 resolve()
+            }
+            trans.onerror = (err) => {
+                reject(err);
             }
 
             const store = trans.objectStore(STORAGE_NAME)
@@ -66,10 +69,13 @@ export default {
     async saveImages(images) {
         const db = await this.getDb()
 
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             const trans = db.transaction([STORAGE_NAME], 'readwrite')
             trans.oncomplete = () => {
                 resolve()
+            }
+            trans.onerror = (err) => {
+                reject(err);
             }
 
             const store = trans.objectStore(STORAGE_NAME)

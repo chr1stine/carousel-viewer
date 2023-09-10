@@ -3,6 +3,7 @@ import { useMainStore } from '@/stores/main';
 import HomeView from './views/HomeView.vue'
 import idb from './services/idb';
 import { watch } from 'vue';
+import { storeToRefs } from 'pinia';
 
 const store = useMainStore();
 
@@ -14,13 +15,23 @@ const store = useMainStore();
   }
 })();
 
+const { mode, index, images } = storeToRefs(store);
+
 // persist on change
 watch(
-  store,
-  async (state) => {
-    localStorage.setItem('mode', state.mode);
-    localStorage.setItem('index', state.index);
-    idb.saveImages(state.images);
+  [mode, index],
+  async ([mode, index]) => {
+    localStorage.setItem('mode', mode);
+    localStorage.setItem('index', index);
+  },
+  { deep: true }
+)
+
+watch(
+  images,
+  async (images) => {
+    await idb.deleteAllImages();
+    await idb.saveImages(images);
   },
   { deep: true }
 )
