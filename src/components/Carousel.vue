@@ -1,6 +1,7 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useMainStore } from '@/stores/main';
+import { memoize, withStopwatch, throttle } from '@/utils'
 
 const isLoading = ref(true);
 
@@ -11,8 +12,7 @@ function drawImage(img) {
   ctx.save();
 }
 
-const updateImage = throttle(async () => {
-  const newIndex = store.index;
+async function buildImg(newIndex) {
   const newImage = store.images[newIndex].file;
   const newSrc = URL.createObjectURL(newImage);
   const img = document.createElement('img');
@@ -23,17 +23,30 @@ const updateImage = throttle(async () => {
     img.onerror = reject;
   });
 
-  drawImage(img);
-  isLoading.value = false;
-}, 1000)
+  return img;
+}
 
+const [memoizedBuildImg, invalidateCachedImages] = memoize(buildImg);
+
+async function updateImage() {
+  const newIndex = store.index;
+
+  withStopwatch(async () => {
+    const img = await memoizedBuildImg(newIndex);
+    drawImage(img);
+  })
+
+  isLoading.value = false;
+}
+
+const throttledUpdateImage = throttle(updateImage, 1000)
 
 async function changeImage(newIndex) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
   isLoading.value = true;
-  
-  updateImage(newIndex);
+
+  throttledUpdateImage(newIndex);
 
   store.index = newIndex;
 }
@@ -42,33 +55,28 @@ let ctx;
 
 const store = useMainStore();
 onMounted(() => {
+  // clear cache
+  invalidateCachedImages();
+
   const canvas = document.querySelector('#canvas');
 
   ctx = canvas.getContext('2d');
   changeImage(store.index);
 })
 
+onUnmounted(() => {
+  // clear cache
+  invalidateCachedImages();
+})
+
 watch(
   () => store.images,
   () => {
+    // clear cache
+    invalidateCachedImages();
     store.index = 0;
     changeImage(store.index);
   })
-
-function throttle(cb, timeout) {
-  let busy = false;
-  return (...args) => {
-    if (busy) {
-      return;
-    }
-    busy = true
-    cb(...args);
-    setTimeout(() => {
-      busy = false;
-      cb(...args);
-    }, timeout)
-  }
-}
 
 watch(
   () => store.index,
@@ -80,7 +88,9 @@ watch(
 
 <template>
   <div class="canvas-container">
-    <div v-show="isLoading" style="position: absolute; color: white; width: 200px; height: 200px; font-size: 4em;">загрузка...</div>
+    <button @click="count()">average</button>
+    <div v-show="isLoading" style="position: absolute; color: white; width: 200px; height: 200px; font-size: 4em;">
+      загрузка...</div>
     <canvas id="canvas" v-bind:class="store.mode"></canvas>
   </div>
 </template>
