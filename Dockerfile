@@ -12,6 +12,8 @@ COPY package*.json ./
 # устанавливаем зависимости проекта
 RUN npm install
 
+RUN npm install --globaly workbox-cli
+
 # копируем файлы и каталоги проекта в текущий рабочий каталог (т.е. в каталог 'app')
 COPY . .
 
