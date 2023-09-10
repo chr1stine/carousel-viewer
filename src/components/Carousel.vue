@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 import { useMainStore } from '@/stores/main';
-import pica from 'pica'
 
 const IMAGE_MAX_WIDTH = ref(null);
 const IMAGE_MAX_HEIGHT = ref(null);
@@ -11,31 +10,6 @@ function drawImage(img) {
   ctx.canvas.height = img.naturalHeight;
   ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.save();
-}
-
-async function scaleTofit(img) {
-  return new Promise((resolve => {
-    const wRatio = img.width / ctx.canvas.width;
-    const hRatio = img.height / ctx.canvas.height;
-    const ratio = Math.max(wRatio, hRatio);
-
-    const newCanvas = document.createElement('canvas');
-    newCanvas.width = img.width / ratio;
-    newCanvas.height = img.height / ratio;
-
-    pica().resize(img, newCanvas, {
-      filter: 'box',
-    }).then(() => {
-      const url = newCanvas.toDataURL();
-      const newImg = document.createElement('img');
-      newImg.src = url;
-      newImg.onload = (e) => {
-        resolve(e.target);
-      }
-    }).catch(err => {
-      console.log('err', err)
-    });
-  }))
 }
 
 const updateImage = throttle(async () => {
@@ -50,10 +24,7 @@ const updateImage = throttle(async () => {
     img.onerror = reject;
   });
 
-  // const newImg = await scaleTofit(img);
-  const newImg = img;
-
-  drawImage(newImg);
+  drawImage(img);
 }, 1000)
 
 async function changeImage(newIndex) {
