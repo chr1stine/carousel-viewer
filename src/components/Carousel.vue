@@ -7,6 +7,8 @@ const IMAGE_MAX_WIDTH = ref(null);
 const IMAGE_MAX_HEIGHT = ref(null);
 
 function drawImage(img) {
+  ctx.canvas.width = img.naturalWidth;
+  ctx.canvas.height = img.naturalHeight;
   ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, ctx.canvas.width, ctx.canvas.height);
   ctx.save();
 }
