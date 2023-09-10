@@ -5,6 +5,7 @@ export const useMainStore = defineStore('main', () => {
   const images = ref([]);
   const index = ref(Number.parseInt(localStorage.getItem('index') ?? 0));
   const mode = ref(localStorage.getItem('mode') ?? 'full');
+  const folderIsLoading = ref(true);
 
   function assignNewImages(files) {
     images.value = files.map((file, id) => {
@@ -12,5 +13,5 @@ export const useMainStore = defineStore('main', () => {
     });
   }
 
-  return { images, mode, index, assignNewImages }
+  return { images, mode, index, assignNewImages, folderIsLoading }
 })

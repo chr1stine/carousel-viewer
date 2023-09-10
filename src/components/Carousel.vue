@@ -1,9 +1,10 @@
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useMainStore } from '@/stores/main';
 import { memoize, withStopwatch, throttle } from '@/utils'
 
-const isLoading = ref(true);
+const imageIsLoading = ref(true);
+
 
 function drawImage(img) {
   ctx.canvas.width = img.naturalWidth;
@@ -36,7 +37,7 @@ async function updateImage() {
     drawImage(img);
   })
 
-  isLoading.value = false;
+  imageIsLoading.value = false;
 }
 
 const throttledUpdateImage = throttle(updateImage, 1000)
@@ -44,7 +45,7 @@ const throttledUpdateImage = throttle(updateImage, 1000)
 async function changeImage(newIndex) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-  isLoading.value = true;
+  imageIsLoading.value = true;
 
   throttledUpdateImage(newIndex);
 
@@ -84,11 +85,14 @@ watch(
     changeImage(index);
   });
 
+const isLoading = computed(() => imageIsLoading && store.folderIsLoading);
+
 </script>
 
 <template>
   <div class="canvas-container">
-    <div v-show="isLoading" style="position: absolute; color: white; width: 200px; height: 200px; font-size: 4em;">
+    <div v-show="isLoading"
+      style="position: absolute; background-color: black; color: white; width: 100vw; height: 100vh; font-size: 4em; display: flex; justify-content: center; align-items: center">
       загрузка...</div>
     <canvas id="canvas" v-bind:class="store.mode"></canvas>
   </div>

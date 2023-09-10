@@ -15,7 +15,7 @@ const store = useMainStore();
   }
 })();
 
-const { mode, index, images } = storeToRefs(store);
+const { mode, index, images, folderIsLoading } = storeToRefs(store);
 
 // persist on change
 watch(
@@ -30,8 +30,10 @@ watch(
 watch(
   images,
   async (images) => {
+    folderIsLoading.value = true;
     await idb.deleteAllImages();
     await idb.saveImages(images);
+    folderIsLoading.value = false;
   },
   { deep: true }
 )
