@@ -88,7 +88,6 @@ watch(
 
 <template>
   <div class="canvas-container">
-    <button @click="count()">average</button>
     <div v-show="isLoading" style="position: absolute; color: white; width: 200px; height: 200px; font-size: 4em;">
       загрузка...</div>
     <canvas id="canvas" v-bind:class="store.mode"></canvas>

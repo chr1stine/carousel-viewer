@@ -9,7 +9,6 @@ export function memoize(cb) {
             return result;
         }
     }, () => {
-        console.log('invalidate cache')
         for (const key in cache) {
             delete cache[key];
         }
@@ -25,7 +24,7 @@ export async function withStopwatch(cb) {
     await cb();
 
     clearInterval(stopwatch);
-    console.log(msPassed / 1000, 'seconds passed');
+    // console.log(msPassed / 1000, 'seconds passed');
 }
 
 export function throttle(cb, timeout) {
