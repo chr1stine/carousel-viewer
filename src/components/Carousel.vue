@@ -30,11 +30,12 @@ const updateImage = throttle(async () => {
 async function changeImage(newIndex) {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-  ctx.fillText('загрузка...',ctx.canvas.width / 2, ctx.canvas.height / 2);
+  updateImage(newIndex);
+
+  ctx.font = `bold ${ctx.canvas.width / 20}px serif`;
+  ctx.fillText('загрузка...', ctx.canvas.width / 2, ctx.canvas.height / 2);
   ctx.fillStyle = "white";
   ctx.textAlign = 'middle';
-
-  updateImage(newIndex);
 
   store.index = newIndex;
 }
